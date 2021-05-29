@@ -1,0 +1,6 @@
+{% autoescape off %}
+Witam {{ user.username }},
+Proszę o kliknięcie linku celem aktywacji konta
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+Jeśli ten mail nie jest adresowany do ciebie. Zignoruj
+{% endautoescape %}

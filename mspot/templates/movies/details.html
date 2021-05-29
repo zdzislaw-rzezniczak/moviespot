@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{%  load static %}
+
+{% block title  %}
+    {% if category %}{{ category.name }}{% else %}Filmy{% endif %}
+{% endblock %}
+
+{% block content %}
+   <div class = "movie-detail">
+        <img src="{{ movie.movie_poster.url }}" alt="{{ movie.name }}">
+        <h3>{{ movie.name }}</h3>
+        <h3><a href="{{ movie.category.get_absolute_url }}">{{ movie.category }}</a> </h3>
+        <p class="cena"> {{ movie.price }} zł</p>
+        <form action="{% url "cart:cart_add" movie.id %}" method="post">
+            {{ cart_movie_form }}
+            {% csrf_token %}
+            <input type="submit" value="Dodaj do koszyka">
+        </form>
+        {{movie.movie_recenzja|linebreaks}}
+   </div>
+
+    {% with comments.count as total_comment %}
+        <h4>
+            {{ total_comments }}  Komentarz{{ total_comment|pluralize:"e" }}
+        </h4>
+    {% endwith %}
+
+    {% for comment in comments %}
+    <div class="comment">
+      <p class="info">
+        Komentarz {{ forloop.counter }} utworzony przez {{ comment.name }}
+        {{ comment.created }}
+      </p>
+      {{ comment.body|linebreaks }}
+    </div>
+  {% empty %}
+    <p>Jeszcze nie ma komentarzy.</p>
+  {% endfor %}
+  {% if new_comment %}
+    <h2>Dodano komentarz.</h2>
+  {% else %}
+    <h4>Dodaj komentarz</h4>
+    <form method="post">
+      {{ comment_form.as_p }}
+      {% csrf_token %}
+      <p><input type="submit" value="Dodaj komentarz"></p>
+    </form>
+  {% endif %}
+
+{%  endblock %}
